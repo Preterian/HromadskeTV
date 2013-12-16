@@ -1,0 +1,1 @@
+include ':App',  ':App:libs:jsoup-1.7.3'

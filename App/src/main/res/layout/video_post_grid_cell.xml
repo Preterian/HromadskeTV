@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:gravity="center_vertical|center_horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:id="@+id/grid_artwork_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical|center_horizontal"
+        android:paddingBottom="8dp">
+
+
+        <com.android.volley.toolbox.NetworkImageView
+            android:id="@+id/grid_video_img"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:src="@drawable/ic_launcher"
+            android:scaleType="centerCrop" />
+
+        <ImageView
+            android:id="@+id/cell_play_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:src="@drawable/play_icon" />
+
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/grid_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/link_title_blue"
+        android:text="Some title"
+        android:textSize="12dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:singleLine="false"
+        android:textIsSelectable="false"
+        android:layout_marginTop="5dp"
+        android:layout_below="@id/grid_artwork_container" />
+
+    <TextView
+        android:id="@+id/grid_description"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/post_description"
+        android:text="Some title"
+        android:textSize="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:singleLine="false"
+        android:textIsSelectable="false"
+        android:layout_marginTop="5dp"
+        android:layout_below="@id/grid_title" />
+
+    <TextView
+        android:id="@+id/grid_date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="left"
+        android:textColor="@color/post_date"
+        android:text="Позавчора, 13 грудня, 22:08"
+        android:textSize="8dp"
+        android:layout_marginLeft="10dp"
+        android:textIsSelectable="false"
+        android:layout_marginTop="20dp"
+        android:layout_below="@id/grid_description" />
+
+</RelativeLayout>

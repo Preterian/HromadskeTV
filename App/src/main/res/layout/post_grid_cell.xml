@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:gravity="center_vertical|center_horizontal" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.android.volley.toolbox.NetworkImageView
+        android:id="@+id/grid_video_img"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:src="@drawable/ic_launcher"
+        android:scaleType="centerCrop"/>
+
+    <RelativeLayout
+        android:id="@+id/grid_video_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <View
+            android:id="@+id/grid_semi_transperent_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:layout_alignBottom="@id/grid_video_img"
+            android:layout_alignLeft="@id/grid_video_img"
+            android:layout_alignRight="@id/grid_video_img"
+            android:theme="@android:style/Theme.Translucent"/>
+        <TextView
+            android:id="@+id/grid_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="left"
+            android:textColor="@color/post_date"
+            android:text="Позавчора, 13 грудня, 22:08"
+            android:textSize="14dp"
+            android:layout_marginLeft="10dp"
+            android:textIsSelectable="false"/>
+        <TextView
+            android:id="@+id/grid_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/post_title"
+            android:text="Some title"
+            android:layout_below="@id/grid_date"
+            android:textSize="16dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:singleLine="false"
+            android:textIsSelectable="false"
+            android:layout_marginTop="5dp"/>
+    </RelativeLayout>
+
+
+
+
+</RelativeLayout>

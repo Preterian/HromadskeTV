@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="post_background">#ffffffff</color>
+    <color name="post_title">#ffffffff</color>
+    <color name="post_date">#ffF2A069</color>
+    <color name="link_title_blue">#ff33a9dc</color>
+    <color name="post_description">#ff999999</color>
+    <color name="menu_background">#ff3d4248</color>
+    <color name="active_button">#ffee843c</color>
+</resources>

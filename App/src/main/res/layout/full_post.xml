@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+
+    >
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginLeft="20dp"
+    android:layout_marginTop="10dp"
+    android:layout_marginRight="15dp"
+    android:layout_marginBottom="10dp">
+
+    <TextView
+        android:id="@+id/full_post_author"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/app_name"
+        android:textSize="8sp"
+         />
+
+    <TextView
+        android:id="@+id/full_post_date"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/app_name"
+        android:textSize="8sp"
+        android:gravity="right" />
+
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="1dp"
+        android:background="@android:color/darker_gray"
+        android:layout_marginTop="2dp"/>
+
+    <TextView
+        android:id="@+id/full_post_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/post_title"
+        android:layout_marginTop="5dp"
+        android:textColor="@android:color/black"
+        android:textSize="16sp"/>
+
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="1dp"
+        android:background="@android:color/darker_gray"
+        android:layout_marginTop="2dp"/>
+
+    <TextView
+        android:id="@+id/full_post_aritcle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@android:color/secondary_text_light"
+        android:text="@string/post_info"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="5dp"/>
+
+</LinearLayout>
+ </ScrollView>
