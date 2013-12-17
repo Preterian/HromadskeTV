@@ -26,42 +26,27 @@ public class NetworkManager {
     /*
         @param url - this is video or interview url.
          */
-    public static void getPostsAsync(final String url, final int page, final  int limit){
+    public static void getPostsAsync(final int page, final  int limit){
 
         HromadskeApp.getThreadExecutor().execute(new Runnable() {
             @Override
             public void run() {
 
-                Document doc = null;
-                try {
-                    doc = Jsoup.connect(url).get();
-                } catch (IOException ex) {
-
-                }
-
-                Elements links = doc.getElementsByTag("a");
-                Elements images = doc.getElementsByTag("img");
-                Elements titles = doc.getElementsByClass("episode_name");
-                Elements descriptions = doc.getElementsByClass("episode_description");
-                Elements dates = doc.getElementsByClass("episode_date");
-
                 int newLimit = limit;
-                if(limit>titles.size()){
-                    newLimit=titles.size();
+                if(limit>HromadskeApp.getTitles().size()){
+                    newLimit=HromadskeApp.getTitles().size();
                 }
 
                 Log.d(TAG, "Items Limit = " + limit);
-                Log.d(TAG, "URL = " + url);
-
 
                 for(int  i = page; i < newLimit; i++){
                     Post post = new Post();
                     post.setId(i);
-                    post.setLink(links.get(i + 9).attr("href"));
-                    post.setVideoImageUrl(images.get(i+2).attr("src"));
-                    post.setLinkText(titles.get(i).text());
-                    post.setInfo(descriptions.get(i).text());
-                    post.setDate(dates.get(i).text());
+                    post.setLink(HromadskeApp.getLinks().get(i + 9).attr("href"));
+                    post.setVideoImageUrl(HromadskeApp.getImages().get(i+2).attr("src"));
+                    post.setLinkText(HromadskeApp.getTitles().get(i).text());
+                    post.setInfo(HromadskeApp.getDescriptions().get(i).text());
+                    post.setDate(HromadskeApp.getDates().get(i).text());
                     try {
                         HromadskeApp.getDatabaseHelper().getDao(Post.class).createOrUpdate(post);
                     } catch (SQLException e) {

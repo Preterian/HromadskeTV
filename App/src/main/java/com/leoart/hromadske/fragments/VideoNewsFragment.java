@@ -147,7 +147,8 @@ public class VideoNewsFragment extends Fragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         //if(Rest.isNetworkOnline()){
-        loadPosts();
+       // loadPosts();
+        HromadskeApp.parseVideoPost("http://hromadske.tv/video/");
         //}
     }
 
@@ -156,7 +157,7 @@ public class VideoNewsFragment extends Fragment {
 
            // Dao<Post, Integer> postsDao = HromadskeApp.getDatabaseHelper().getDao(Post.class);
 
-            NetworkManager.getPostsAsync("http://hromadske.tv/video/", currentPage, limitPostsPerPage);
+            NetworkManager.getPostsAsync(currentPage, limitPostsPerPage);
 
 
     }
