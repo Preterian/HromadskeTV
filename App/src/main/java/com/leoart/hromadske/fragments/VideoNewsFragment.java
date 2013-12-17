@@ -7,6 +7,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
+import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,10 +16,12 @@ import android.widget.AdapterView;
 import android.widget.GridView;
 
 import com.j256.ormlite.dao.Dao;
+import com.j256.ormlite.stmt.UpdateBuilder;
 import com.leoart.hromadske.CursorAdapter.PostsGridCursorAdapter;
 import com.leoart.hromadske.HromadskeApp;
 import com.leoart.hromadske.R;
 import com.leoart.hromadske.model.Post;
+import com.leoart.hromadske.network.NetworkManager;
 import com.leoart.hromadske.network.Rest;
 
 import java.sql.SQLException;
@@ -27,16 +30,16 @@ import java.sql.SQLException;
  * Created by Bogdan on 16.12.13.
  */
 public class VideoNewsFragment extends Fragment {
-    private static final String TAG = "PostsFragment";
-    final String LOG_TAG = "myLogs";
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
         limitPostsPerPage = 16;
         try {
-            HromadskeApp.getDatabaseHelper().parsePosts("http://hromadske.tv/video/", limitPostsPerPage);
-            postsDao = HromadskeApp.getDatabaseHelper().getPostsDao();
+            //   HromadskeApp.getDatabaseHelper().parsePosts("http://hromadske.tv/video/", limitPostsPerPage);
+            // postsDao = HromadskeApp.getDatabaseHelper().getPostsDao();
+            postsDao = HromadskeApp.getDatabaseHelper().getDao(Post.class);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -68,7 +71,7 @@ public class VideoNewsFragment extends Fragment {
                         try {
                             post = postsDao.queryForId(id);
                             if (post != null) {
-                                Log.d(TAG, "Some post was choosed = "
+                                Log.d(LOG_TAG, "Some post was choosed = "
                                         + post.getLinkText());
 
 
@@ -94,7 +97,7 @@ public class VideoNewsFragment extends Fragment {
 
                             }
                         } catch (SQLException e) {
-                            Log.e(TAG, "SQL Error: " + e.getMessage());
+                            Log.e(LOG_TAG, "SQL Error: " + e.getMessage());
                             e.printStackTrace();
                         }
                     }
@@ -118,6 +121,15 @@ public class VideoNewsFragment extends Fragment {
                                  int visibleItemCount, int totalItemCount) {
                 // TODO Auto-generated method stub
                 Log.e("GridView", "firstVisibleItem" + firstVisibleItem + "\nLastVisibleItem" + totalItemCount);
+                final int lastItem = firstVisibleItem + visibleItemCount;
+                if(lastItem == totalItemCount) {
+                    // Last item is fully visible.
+                    Log.d(LOG_TAG, "Last item is fully visible, trying to load more posts..");
+                    currentPage = totalItemCount;
+                    limitPostsPerPage+=16;
+                    loadPosts();
+                    refreshAdapter();
+                }
             }
         });
 
@@ -129,6 +141,65 @@ public class VideoNewsFragment extends Fragment {
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         Log.d(LOG_TAG, "Fragment1 onAttach");
+    }
+
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        //if(Rest.isNetworkOnline()){
+        loadPosts();
+        //}
+    }
+
+    private void loadPosts() {
+
+
+           // Dao<Post, Integer> postsDao = HromadskeApp.getDatabaseHelper().getDao(Post.class);
+
+            NetworkManager.getPostsAsync("http://hromadske.tv/video/", currentPage, limitPostsPerPage);
+
+
+    }
+
+    //Use this when OnPostUpdateEvent
+    public void refreshAdapter() {
+        if (getActivity() != null) {
+            getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    if (mAdapter != null) {
+                        mAdapter.setCursor(getCursor());
+                        mAdapter.notifyDataSetChanged();
+                    }
+                }
+            });
+        }
+    }
+
+
+    //@Override
+    protected void loadNextPage() {
+        /*if(isLoadedAll()){
+            Log.d(LOG_TAG, "Loaded all, stop...");
+            return;
+        }*/
+        loadPosts();
+    }
+
+    public void deleteCashedItems() {
+        Dao<Post, Integer> topDao;
+        try {
+            topDao = HromadskeApp.getDatabaseHelper().getDao(Post.class);
+            UpdateBuilder<Post, Integer> updateQuery = topDao.updateBuilder();
+            //not shore for this
+           // updateQuery.where().eq("post", true);
+          //  updateQuery.updateColumnValue("post", false);
+            //not shore for this
+            //updateQuery.update();
+        } catch (SQLException e) {
+            Log.d(LOG_TAG, "Error deleting cash items... " + e.getMessage());
+            e.printStackTrace();
+        }
     }
 
     public void onCreate(Bundle savedInstanceState) {
@@ -176,6 +247,11 @@ public class VideoNewsFragment extends Fragment {
         Log.d(LOG_TAG, "Fragment1 onDetach");
     }
 
+    protected Cursor getCursor() {
+        Cursor cursor = HromadskeApp.getDatabaseHelper().getReadableDatabase().query(Post.TABLE_NAME, new String[]{"id", "link", "link_text", "link_info", "date", "video_image_url"}, null, null, null, null, null, null);
+        return cursor;
+    }
+
     private boolean loading = false;
     private boolean loadedAll = false;
 
@@ -184,9 +260,11 @@ public class VideoNewsFragment extends Fragment {
     private View view;
     private Dao<Post, Integer> postsDao;
     private int limitPostsPerPage;
+    private SparseArray<Boolean> loadedAllMap;
+    private SparseArray<Boolean> loadingMap;
+    private int currentPage = 0;
+    private int count = 0;
 
-    protected Cursor getCursor() {
-        Cursor cursor = HromadskeApp.getDatabaseHelper().getReadableDatabase().query(Post.TABLE_NAME, new String[]{"id", "link", "link_text", "link_info", "date", "video_image_url"}, null, null, null, null, null, null);
-        return cursor;
-    }
+    final String LOG_TAG = "VideoNewsFragment";
+
 }

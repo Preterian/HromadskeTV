@@ -37,7 +37,7 @@ public class MainActivity extends FragmentActivity {
         dlDrawer.setupDrawerConfiguration((ListView) findViewById(R.id.lvDrawer),
                 R.layout.drawer_nav_item, R.id.flContent);
         // Add nav items
-        dlDrawer.addNavItem("Пошук", "Пошук", PostsFragment.class);
+        dlDrawer.addNavItem("Пошук", "Пошук", VideoNewsFragment.class);
         dlDrawer.addNavItem("Відео новини", "Відео новини", VideoNewsFragment.class);
         dlDrawer.addNavItem("Інтерв'ю", "Інтерв'ю", InterviewFragment.class);
         dlDrawer.addNavItem("Про проект", "Про проект", AboutProjectFragment.class);

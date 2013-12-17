@@ -3,12 +3,20 @@ package com.leoart.hromadske;
 import android.app.Application;
 import android.content.Context;
 import android.content.res.Configuration;
+import android.net.http.HttpResponseCache;
 import android.util.Log;
 
 import com.j256.ormlite.android.apptools.OpenHelperManager;
+import com.j256.ormlite.dao.Dao;
+import com.j256.ormlite.stmt.DeleteBuilder;
 import com.leoart.hromadske.model.FullPost;
+import com.leoart.hromadske.model.Post;
+import com.leoart.hromadske.orm.DBHelper;
 import com.leoart.hromadske.orm.DataBaseHelper;
 
+import java.io.File;
+import java.io.IOException;
+import java.sql.SQLException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -18,14 +26,56 @@ import java.util.concurrent.Executors;
 public class HromadskeApp extends Application {
     public static String Tag = "UaEnergyApp";
     public static Context context;
-
-
+    public static HromadskeApp appInstance;
+    public static File CASH_DIR;
+    public static final long CASH_SIZE = 30* 1024* 1024; //50Mb
     @Override
     public void onCreate(){
         super.onCreate();
         Log.d(Tag, "Started UaEnergyApp");
 
         context = getApplicationContext();
+        CASH_DIR = context.getCacheDir();
+
+        installCash();
+        setAppInstance(this);
+    }
+
+    private void setAppInstance(HromadskeApp hromadskeApp) {
+        appInstance = hromadskeApp;
+    }
+
+    public static void installCash() {
+        Log.d(Tag, "Installing HTTP cash...");
+        try{
+            File httpCashDir = new File(HromadskeApp.CASH_DIR, "http");
+            long httpCashDirSize = HromadskeApp.CASH_SIZE;
+            HttpResponseCache.install(httpCashDir, httpCashDirSize);
+        }catch (IOException e){
+            Log.d(Tag, "Error while installing cash: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    public static void uninstallCash(){
+        Log.d(Tag, "Uninstalling cash...");
+        HttpResponseCache cash = HttpResponseCache.getInstalled();
+        if(cash != null){
+            try {
+                cash.delete();
+            }catch (IOException e){
+                Log.d(Tag, "Error while uninstalling cash: " + e.getMessage());
+                e.printStackTrace();
+            }
+        }
+    }
+
+
+    //TODO
+    @Override
+    public void onLowMemory(){
+        Log.d(Tag, "On Low Memory Called");
+        //TODO
     }
 
     @Override
@@ -42,7 +92,15 @@ public class HromadskeApp extends Application {
 
 
     public void clearDB(){
-
+        DataBaseHelper db = HromadskeApp.getDatabaseHelper();
+        try{
+            Dao<Post, Integer> postsDao = db.getDao(Post.class);
+            DeleteBuilder<Post, Integer> deletePostsDao = postsDao.deleteBuilder();
+            deletePostsDao.delete();
+        }catch (SQLException e){
+            Log.d(Tag, "Error while getting dao: " + e.getMessage());
+            e.printStackTrace();
+        }
     }
 
     @Override

@@ -88,6 +88,7 @@
     <orderEntry type="library" exported="" name="ormlite-core-4.47" level="project" />
     <orderEntry type="library" exported="" name="jsoup-1.7.3" level="project" />
     <orderEntry type="library" exported="" name="support-v4-19.0.0" level="project" />
+    <orderEntry type="library" exported="" name="android-query-full.0.26.7" level="project" />
     <orderEntry type="library" exported="" name="volley" level="project" />
     <orderEntry type="library" exported="" name="ComAndroidSupportAppcompatV71900.aar" level="project" />
   </component>

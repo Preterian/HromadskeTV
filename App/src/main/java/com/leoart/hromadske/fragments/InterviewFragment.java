@@ -33,14 +33,6 @@ public class InterviewFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        try {
-            HromadskeApp.getDatabaseHelper().close();
-            HromadskeApp.getDatabaseHelper().parsePosts("http://hromadske.tv/interview/",limitPostsPerPage);
-            postsDao = HromadskeApp.getDatabaseHelper().getPostsDao();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
         view = inflater.inflate(R.layout.posts_grid, container, false);
 
         gridView = (GridView) view.findViewById(R.id.post_grid);
@@ -131,6 +123,12 @@ public class InterviewFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Log.d(LOG_TAG, "Fragment1 onCreate");
+        try {
+            HromadskeApp.getDatabaseHelper().parsePosts("http://hromadske.tv/interview/",limitPostsPerPage);
+            postsDao = HromadskeApp.getDatabaseHelper().getPostsDao();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     public void onActivityCreated(Bundle savedInstanceState) {

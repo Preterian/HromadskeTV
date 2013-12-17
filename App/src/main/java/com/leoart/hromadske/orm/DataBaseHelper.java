@@ -36,7 +36,7 @@ public class DataBaseHelper extends OrmLiteSqliteOpenHelper {
     private static final String DATABASE_NAME = "hromadske.db";
     // any time you make changes to your database objects, you may have to
     // increase the database version
-    private static final int DATABASE_VERSION = 2;
+    private static final int DATABASE_VERSION = 13;
 
     private static String DB_PATH = "/data/data/com.leoart.android.hromadske/databases/";
 
@@ -118,7 +118,7 @@ public class DataBaseHelper extends OrmLiteSqliteOpenHelper {
 
 
 
-    public  void parseData(String url, int limit) throws SQLException, IOException {
+    private  void parseData(String url, int limit) throws SQLException, IOException {
 
         Document doc = null;
         try {
@@ -132,8 +132,15 @@ public class DataBaseHelper extends OrmLiteSqliteOpenHelper {
         Elements titles = doc.getElementsByClass("episode_name");
         Elements descriptions = doc.getElementsByClass("episode_description");
         Elements dates = doc.getElementsByClass("episode_date");
+
+        if(limit>titles.size()){
+            limit=titles.size();
+        }
+
         Log.d(TAG, "Items Limit = " + limit);
         Log.d(TAG, "URL = " + url);
+
+
         for(int  i = 0; i < limit; i++){
             Post post = new Post();
             post.setId(i);
