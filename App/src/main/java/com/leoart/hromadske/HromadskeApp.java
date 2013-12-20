@@ -5,6 +5,7 @@ import android.app.Application;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.net.http.HttpResponseCache;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.util.Log;
 
@@ -30,7 +31,7 @@ import java.util.concurrent.Executors;
  * Created by Bogdan on 15.12.13.
  */
 public class HromadskeApp extends Application {
-    public static String Tag = "UaEnergyApp";
+    public static String Tag = "HromadskeApp";
     public static Context context;
     public static HromadskeApp appInstance;
     public static File CASH_DIR;
@@ -46,10 +47,15 @@ public class HromadskeApp extends Application {
 
         installCash();
         setAppInstance(this);
+        // parseVideoPost("http://hromadske.tv/video/");
     }
 
-    private void setAppInstance(HromadskeApp hromadskeApp) {
+    public void setAppInstance(HromadskeApp hromadskeApp) {
         appInstance = hromadskeApp;
+    }
+
+    public static HromadskeApp getAppInstance() {
+        return appInstance;
     }
 
     @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
@@ -132,24 +138,84 @@ public class HromadskeApp extends Application {
         return databaseHelper;
     }
 
+
+    static class PostsAsyncParser extends AsyncTask<String, Void, Void> {
+
+        Elements links = null;
+        Elements images = null;
+        Elements titles = null;
+        Elements descriptions = null;
+        Elements dates = null;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+
+        @Override
+        protected Void doInBackground(String... urls) {
+            Document doc = null;
+            try {
+                doc = Jsoup.connect(urls[0]).get();
+            } catch (IOException ex) {
+
+            }
+
+            titles = doc.getElementsByClass("episode_name");
+            images = doc.getElementsByTag("img");
+
+            links = doc.getElementsByTag("a");
+
+            descriptions = doc.getElementsByClass("episode_description");
+            dates = doc.getElementsByClass("episode_date");
+
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void result) {
+            super.onPostExecute(result);
+            HromadskeApp.setDates(dates);
+            HromadskeApp.setTitles(titles);
+            HromadskeApp.setImages(images);
+            HromadskeApp.setLinks(links);
+            HromadskeApp.setDescriptions(descriptions);
+        }
+    }
+
+
     public static void parseVideoPost(final String url) {
+
+        // new Thread(new Task(url)).start();
+
+        PostsAsyncParser parser = new PostsAsyncParser();
+        parser.execute(url);
+
+       /* threadExecutor = Executors.newCachedThreadPool();
         getThreadExecutor().execute(new Runnable() {
             @Override
             public void run() {
-
                 Document doc = null;
                 try {
                     doc = Jsoup.connect(url).get();
                 } catch (IOException ex) {
 
                 }
-                links = doc.getElementsByTag("a");
-                images = doc.getElementsByTag("img");
-                titles = doc.getElementsByClass("episode_name");
-                descriptions = doc.getElementsByClass("episode_description");
-                dates = doc.getElementsByClass("episode_date");
+
+                Elements titles = doc.getElementsByClass("episode_name");
+
+
+
+                HromadskeApp.getAppInstance().setLinks(doc.getElementsByTag("a"));
+                HromadskeApp.getAppInstance().setImages(doc.getElementsByTag("img"));
+                HromadskeApp.getAppInstance().setTitles(doc.getElementsByClass("episode_name"));
+                HromadskeApp.getAppInstance().setDescriptions(doc.getElementsByClass("episode_description"));
+                HromadskeApp.getAppInstance().setDates(doc.getElementsByClass("episode_date"));
+
+                Log.d(Tag, "TITLES = " + getAppInstance().getTitles());
             }
-        });
+        });*/
+
 
     }
 
@@ -171,6 +237,26 @@ public class HromadskeApp extends Application {
 
     public static Elements getDates() {
         return dates;
+    }
+
+    public static void setLinks(Elements links) {
+        HromadskeApp.links = links;
+    }
+
+    public static void setImages(Elements images) {
+        HromadskeApp.images = images;
+    }
+
+    public static void setTitles(Elements titles) {
+        HromadskeApp.titles = titles;
+    }
+
+    public static void setDescriptions(Elements descriptions) {
+        HromadskeApp.descriptions = descriptions;
+    }
+
+    public static void setDates(Elements dates) {
+        HromadskeApp.dates = dates;
     }
 
     public static void setDatabaseHelper(DataBaseHelper databaseHelper) {

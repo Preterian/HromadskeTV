@@ -148,7 +148,7 @@ public class VideoNewsFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         //if(Rest.isNetworkOnline()){
        // loadPosts();
-        HromadskeApp.parseVideoPost("http://hromadske.tv/video/");
+
         //}
     }
 
@@ -205,7 +205,9 @@ public class VideoNewsFragment extends Fragment {
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.d(LOG_TAG, "Fragment1 onCreate");
+        Log.d(LOG_TAG, "VideoNewsFragment1 onCreate");
+        HromadskeApp.parseVideoPost("http://hromadske.tv/video/");
+      //  Log.d(LOG_TAG, "SIZE= "+ HromadskeApp.getTitles().size());
     }
 
     public void onActivityCreated(Bundle savedInstanceState) {
