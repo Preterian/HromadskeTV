@@ -50,7 +50,7 @@ public class HromadskeApp extends Application {
 
         installCash();
         setAppInstance(this);
-        parseDataToDB("http://hromadske.tv/video/");
+      //  parseDataToDB("http://hromadske.tv/video/");
     }
 
     public void setAppInstance(HromadskeApp hromadskeApp) {
@@ -143,8 +143,11 @@ public class HromadskeApp extends Application {
 
     public static void parseDataToDB(final String url) {
 
-        titles = new ArrayList<String>();
+        titlesE = new Elements();
         links = new Elements();
+        images = new Elements();
+        dates = new Elements();
+        descriptions = new Elements();
 
 
         HromadskeApp.getThreadExecutor().execute(new Runnable() {
@@ -157,26 +160,22 @@ public class HromadskeApp extends Application {
                     ex.printStackTrace();
                 }
                 links = (doc.getElementsByTag("a"));
-                Elements images = (doc.getElementsByTag("img"));
-                Elements titlesE = (doc.getElementsByClass("episode_name"));
-                Elements descriptions = (doc.getElementsByClass("episode_description"));
-                Elements dates = (doc.getElementsByClass("episode_date"));
-
-                for(int i =0; i < titlesE.size(); i++){
-                    titles.add(titlesE.get(i).text());
-                }
+                images = (doc.getElementsByTag("img"));
+                titlesE = (doc.getElementsByClass("episode_name"));
+                descriptions = (doc.getElementsByClass("episode_description"));
+                dates = (doc.getElementsByClass("episode_date"));
 
                 Log.d(Tag, "SIIIII" + titles.size());
 
-               /* int len = descriptions.size();
+                int len = descriptions.size();
                 for (int i = 0; i < len; i++) {
                     Post post = new Post();
                     post.setId(i);
-                    post.setLink(DataSingleton.getInstance().getLinks().get(i + 9).attr("href"));
-                    post.setVideoImageUrl(DataSingleton.getInstance().getImages().get(i + 2).attr("src"));
-                    post.setLinkText(DataSingleton.getInstance().getTitles().get(i).text());
-                    post.setInfo(DataSingleton.getInstance().getDescriptions().get(i).text());
-                    post.setDate(DataSingleton.getInstance().getDates().get(i).text());
+                    post.setLink(links.get(i + 9).attr("href"));
+                    post.setVideoImageUrl(images.get(i + 2).attr("src"));
+                    post.setLinkText(titlesE.get(i).text());
+                    post.setInfo(descriptions.get(i).text());
+                    post.setDate(dates.get(i).text());
                     try {
                         getDatabaseHelper().getDao(Post.class).createOrUpdate(post);
                     } catch (SQLException e) {
@@ -185,11 +184,11 @@ public class HromadskeApp extends Application {
                     }
 
                 }
-            }*/
+
             }
 
         });
-        Log.d(Tag, "SIIIII" + links.size());
+
     }
 
 
@@ -220,6 +219,26 @@ public class HromadskeApp extends Application {
     }
 
     private String fullPostUrl;
+
+    public static Elements getLinks() {
+        return links;
+    }
+
+    public static Elements getImages() {
+        return images;
+    }
+
+    public static Elements getTitlesE() {
+        return titlesE;
+    }
+
+    public static Elements getDescriptions() {
+        return descriptions;
+    }
+
+    public static Elements getDates() {
+        return dates;
+    }
 
     protected static ArrayList<String> titles = null;
     protected static Elements links = null;

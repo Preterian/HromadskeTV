@@ -122,13 +122,9 @@ public class InterviewFragment extends Fragment {
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        HromadskeApp.parseDataToDB("http://hromadske.tv/interview/");
         Log.d(LOG_TAG, "Fragment1 onCreate");
-        try {
-            HromadskeApp.getDatabaseHelper().parsePosts("http://hromadske.tv/interview/",limitPostsPerPage);
-            postsDao = HromadskeApp.getDatabaseHelper().getPostsDao();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+
     }
 
     public void onActivityCreated(Bundle savedInstanceState) {

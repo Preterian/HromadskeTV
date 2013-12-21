@@ -22,6 +22,7 @@ import com.leoart.hromadske.HromadskeApp;
 import com.leoart.hromadske.R;
 import com.leoart.hromadske.model.Post;
 import com.leoart.hromadske.network.NetworkManager;
+import com.leoart.hromadske.network.Rest;
 
 import java.sql.SQLException;
 
@@ -36,8 +37,6 @@ public class VideoNewsFragment extends Fragment {
 
         limitPostsPerPage = 16;
         try {
-            //   HromadskeApp.getDatabaseHelper().parsePosts("http://hromadske.tv/video/", limitPostsPerPage);
-            // postsDao = HromadskeApp.getDatabaseHelper().getPostsDao();
             postsDao = HromadskeApp.getDatabaseHelper().getDao(Post.class);
         } catch (SQLException e) {
             e.printStackTrace();
@@ -121,11 +120,11 @@ public class VideoNewsFragment extends Fragment {
                 // TODO Auto-generated method stub
                 Log.e("GridView", "firstVisibleItem" + firstVisibleItem + "\nLastVisibleItem" + totalItemCount);
                 final int lastItem = firstVisibleItem + visibleItemCount;
-                if(lastItem == totalItemCount) {
+                if (lastItem == totalItemCount) {
                     // Last item is fully visible.
                     Log.d(LOG_TAG, "Last item is fully visible, trying to load more posts..");
                     currentPage = totalItemCount;
-                    limitPostsPerPage+=16;
+                    limitPostsPerPage += 16;
                     loadPosts();
                     refreshAdapter();
                 }
@@ -146,7 +145,7 @@ public class VideoNewsFragment extends Fragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         //if(Rest.isNetworkOnline()){
-       // loadPosts();
+        // loadPosts();
 
         //}
     }
@@ -154,9 +153,9 @@ public class VideoNewsFragment extends Fragment {
     private void loadPosts() {
 
 
-           // Dao<Post, Integer> postsDao = HromadskeApp.getDatabaseHelper().getDao(Post.class);
+        // Dao<Post, Integer> postsDao = HromadskeApp.getDatabaseHelper().getDao(Post.class);
 
-            NetworkManager.getPostsAsync(currentPage, limitPostsPerPage);
+        NetworkManager.getPostsAsync(currentPage, limitPostsPerPage);
 
 
     }
@@ -192,8 +191,8 @@ public class VideoNewsFragment extends Fragment {
             topDao = HromadskeApp.getDatabaseHelper().getDao(Post.class);
             UpdateBuilder<Post, Integer> updateQuery = topDao.updateBuilder();
             //not shore for this
-           // updateQuery.where().eq("post", true);
-          //  updateQuery.updateColumnValue("post", false);
+            // updateQuery.where().eq("post", true);
+            //  updateQuery.updateColumnValue("post", false);
             //not shore for this
             //updateQuery.update();
         } catch (SQLException e) {
@@ -205,8 +204,10 @@ public class VideoNewsFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Log.d(LOG_TAG, "VideoNewsFragment1 onCreate");
-       HromadskeApp.parseDataToDB("http://hromadske.tv/video/");
-      // Log.d(LOG_TAG, "SIZE= " + HromadskeApp.titles.size());
+        if (Rest.isNetworkOnline()) {
+            HromadskeApp.parseDataToDB("http://hromadske.tv/video/");
+            Log.d(LOG_TAG, "SIZE= " + HromadskeApp.getTitlesE().size());
+        }
     }
 
     public void onActivityCreated(Bundle savedInstanceState) {

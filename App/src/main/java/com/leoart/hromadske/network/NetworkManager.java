@@ -24,7 +24,9 @@ public class NetworkManager {
             @Override
             public void run() {
 
-              /*  int newLimit = limit;
+
+
+             /*  int newLimit = limit;
                 if(limit> HromadskeApp.getInstance().getTitles().size()){
                     newLimit=DataSingleton.getTitles().size();
                 }
@@ -45,8 +47,8 @@ public class NetworkManager {
                         Log.d(TAG, "Error loading data to dataBase: " + e.getMessage());
                         e.printStackTrace();
                     }
-                    // postsDao.create(post);
-                } */
+
+                }*/
             }
         });
     }
