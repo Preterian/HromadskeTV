@@ -22,7 +22,6 @@ import com.leoart.hromadske.HromadskeApp;
 import com.leoart.hromadske.R;
 import com.leoart.hromadske.model.Post;
 import com.leoart.hromadske.network.NetworkManager;
-import com.leoart.hromadske.network.Rest;
 
 import java.sql.SQLException;
 
@@ -206,8 +205,8 @@ public class VideoNewsFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Log.d(LOG_TAG, "VideoNewsFragment1 onCreate");
-        HromadskeApp.parseVideoPost("http://hromadske.tv/video/");
-      //  Log.d(LOG_TAG, "SIZE= "+ HromadskeApp.getTitles().size());
+       HromadskeApp.parseDataToDB("http://hromadske.tv/video/");
+      // Log.d(LOG_TAG, "SIZE= " + HromadskeApp.titles.size());
     }
 
     public void onActivityCreated(Bundle savedInstanceState) {

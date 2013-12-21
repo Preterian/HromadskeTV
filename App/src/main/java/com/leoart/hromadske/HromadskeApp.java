@@ -7,6 +7,7 @@ import android.content.res.Configuration;
 import android.net.http.HttpResponseCache;
 import android.os.AsyncTask;
 import android.os.Build;
+import android.renderscript.Element;
 import android.util.Log;
 
 import com.j256.ormlite.android.apptools.OpenHelperManager;
@@ -24,6 +25,8 @@ import org.jsoup.select.Elements;
 import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -47,7 +50,7 @@ public class HromadskeApp extends Application {
 
         installCash();
         setAppInstance(this);
-        // parseVideoPost("http://hromadske.tv/video/");
+        parseDataToDB("http://hromadske.tv/video/");
     }
 
     public void setAppInstance(HromadskeApp hromadskeApp) {
@@ -138,136 +141,67 @@ public class HromadskeApp extends Application {
         return databaseHelper;
     }
 
+    public static void parseDataToDB(final String url) {
 
-    static class PostsAsyncParser extends AsyncTask<String, Void, Void> {
-
-        Elements links = null;
-        Elements images = null;
-        Elements titles = null;
-        Elements descriptions = null;
-        Elements dates = null;
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-        }
-
-        @Override
-        protected Void doInBackground(String... urls) {
-            Document doc = null;
-            try {
-                doc = Jsoup.connect(urls[0]).get();
-            } catch (IOException ex) {
-
-            }
-
-            titles = doc.getElementsByClass("episode_name");
-            images = doc.getElementsByTag("img");
-
-            links = doc.getElementsByTag("a");
-
-            descriptions = doc.getElementsByClass("episode_description");
-            dates = doc.getElementsByClass("episode_date");
-
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Void result) {
-            super.onPostExecute(result);
-            HromadskeApp.setDates(dates);
-            HromadskeApp.setTitles(titles);
-            HromadskeApp.setImages(images);
-            HromadskeApp.setLinks(links);
-            HromadskeApp.setDescriptions(descriptions);
-        }
-    }
+        titles = new ArrayList<String>();
+        links = new Elements();
 
 
-    public static void parseVideoPost(final String url) {
-
-        // new Thread(new Task(url)).start();
-
-        PostsAsyncParser parser = new PostsAsyncParser();
-        parser.execute(url);
-
-       /* threadExecutor = Executors.newCachedThreadPool();
-        getThreadExecutor().execute(new Runnable() {
+        HromadskeApp.getThreadExecutor().execute(new Runnable() {
             @Override
             public void run() {
                 Document doc = null;
                 try {
                     doc = Jsoup.connect(url).get();
                 } catch (IOException ex) {
+                    ex.printStackTrace();
+                }
+                links = (doc.getElementsByTag("a"));
+                Elements images = (doc.getElementsByTag("img"));
+                Elements titlesE = (doc.getElementsByClass("episode_name"));
+                Elements descriptions = (doc.getElementsByClass("episode_description"));
+                Elements dates = (doc.getElementsByClass("episode_date"));
 
+                for(int i =0; i < titlesE.size(); i++){
+                    titles.add(titlesE.get(i).text());
                 }
 
-                Elements titles = doc.getElementsByClass("episode_name");
+                Log.d(Tag, "SIIIII" + titles.size());
 
+               /* int len = descriptions.size();
+                for (int i = 0; i < len; i++) {
+                    Post post = new Post();
+                    post.setId(i);
+                    post.setLink(DataSingleton.getInstance().getLinks().get(i + 9).attr("href"));
+                    post.setVideoImageUrl(DataSingleton.getInstance().getImages().get(i + 2).attr("src"));
+                    post.setLinkText(DataSingleton.getInstance().getTitles().get(i).text());
+                    post.setInfo(DataSingleton.getInstance().getDescriptions().get(i).text());
+                    post.setDate(DataSingleton.getInstance().getDates().get(i).text());
+                    try {
+                        getDatabaseHelper().getDao(Post.class).createOrUpdate(post);
+                    } catch (SQLException e) {
+                        Log.d(Tag, "Error loading data to dataBase: " + e.getMessage());
+                        e.printStackTrace();
+                    }
 
-
-                HromadskeApp.getAppInstance().setLinks(doc.getElementsByTag("a"));
-                HromadskeApp.getAppInstance().setImages(doc.getElementsByTag("img"));
-                HromadskeApp.getAppInstance().setTitles(doc.getElementsByClass("episode_name"));
-                HromadskeApp.getAppInstance().setDescriptions(doc.getElementsByClass("episode_description"));
-                HromadskeApp.getAppInstance().setDates(doc.getElementsByClass("episode_date"));
-
-                Log.d(Tag, "TITLES = " + getAppInstance().getTitles());
+                }
+            }*/
             }
-        });*/
 
-
+        });
+        Log.d(Tag, "SIIIII" + links.size());
     }
 
-    public static Elements getLinks() {
-        return links;
-    }
-
-    public static Elements getImages() {
-        return images;
-    }
-
-    public static Elements getTitles() {
-        return titles;
-    }
-
-    public static Elements getDescriptions() {
-        return descriptions;
-    }
-
-    public static Elements getDates() {
-        return dates;
-    }
-
-    public static void setLinks(Elements links) {
-        HromadskeApp.links = links;
-    }
-
-    public static void setImages(Elements images) {
-        HromadskeApp.images = images;
-    }
-
-    public static void setTitles(Elements titles) {
-        HromadskeApp.titles = titles;
-    }
-
-    public static void setDescriptions(Elements descriptions) {
-        HromadskeApp.descriptions = descriptions;
-    }
-
-    public static void setDates(Elements dates) {
-        HromadskeApp.dates = dates;
-    }
 
     public static void setDatabaseHelper(DataBaseHelper databaseHelper) {
         HromadskeApp.databaseHelper = databaseHelper;
     }
 
-    private static DataBaseHelper databaseHelper;
+    protected static DataBaseHelper databaseHelper;
 
-    private static ExecutorService threadExecutor;
+    protected static ExecutorService threadExecutor;
 
-    private static FullPost fullPost = new FullPost();
+    protected static FullPost fullPost = new FullPost();
 
     public static FullPost getFullPost() {
         return fullPost;
@@ -287,10 +221,10 @@ public class HromadskeApp extends Application {
 
     private String fullPostUrl;
 
-    private static Elements links = null;
-    private static Elements images = null;
-    private static Elements titles = null;
-    private static Elements descriptions = null;
-    private static Elements dates = null;
-
+    protected static ArrayList<String> titles = null;
+    protected static Elements links = null;
+    protected static Elements images = null;
+    protected static Elements titlesE = null;
+    protected static Elements descriptions = null;
+    protected static Elements dates = null;
 }
